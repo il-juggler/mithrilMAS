@@ -1,0 +1,3 @@
+[submodule "mithrilMAS"]
+	path = mithrilMAS
+	url = git@github.com:il-juggler/mithrilMAS.git
