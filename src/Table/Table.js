@@ -1,5 +1,6 @@
-function Table() {
+export default Table;
 
+function Table() {
     this.draw = (function (selection) {
         let datum = selection.datum()
         let data = this.compute(datum.columns, datum.rows)
@@ -16,9 +17,10 @@ function Table() {
         }
         const tBodyEl = tableEl.select('tbody');
 
-        const tRows = tBodyEl.selectAll('tr.row').data(data)
+
+        const tRows = tBodyEl.selectAll('tr.trow').data(data)
             .join(
-                enter => enter.append('tr').attr('class', 'row'),
+                enter => enter.append('tr').attr('class', 'trow'),
                 update => update,
                 exit => exit.remove()
             );
@@ -34,7 +36,7 @@ function Table() {
 
     this.compute = function(columns, rows) {
         return rows.map(row => {
-            return {cells : columns.map(column => column.compute(row))}
+            return {row, cells : columns.map(column => column.compute(row))}
         })
     }
 

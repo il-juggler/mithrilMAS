@@ -1,4 +1,6 @@
 
+export default Column;
+
 function Column(name, config) {
     if(this instanceof Column === false) return new Column(name, config);
     if(!name) throw new Error('Must specify a name on a Column')
@@ -21,8 +23,8 @@ function Column(name, config) {
         return cell;
     }
 
-    this.update = update => update.text( F('text') );
-    this.enter = function () {}
+    this.update = typeof config.update == 'function' ? config.update : update => update.text( F('text') );
+    this.enter  = typeof config.enter == 'function'  ? config.enter : e => e;
 }
 
 
