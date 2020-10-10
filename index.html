@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="js-focus-visible">
+    <head>
+      <meta charset="utf-8">
+      <title>Comunicacion</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+      <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+      <link rel="stylesheet"  href="/bulma-0.8.0/css/bulma.css">
+      
+      <style>
+        .button.k {
+            height:auto;
+            text-align: left;
+            min-width: 160px;
+            justify-content: start;
+        }
+
+        .floater {
+            position: absolute;
+            min-width: 160px;
+            min-height:320px;
+            border:1px solid steelblue;
+            padding:8px;
+            border-radius: 4px;
+        }
+
+        .floater .opts {
+            max-height: 400px;
+            overflow-y: hidden;
+        }
+
+        .enfocado {
+            z-index: 1000;
+        }
+      </style>
+    </head>
+    <body>
+
+        <section class="section">
+            <div class="container">
+                <!---
+                <button tabindex="0" class="button k is-small is-white" id="chamuk0">
+                    <div>
+                        <strong>121-00-00-000</strong>
+                        <br />
+                        <div>IVA Gral 16%</div>
+                    </div>
+                </button>
+            -->
+
+                <div id="tableHash"></div>
+              </div>
+        </section>
+
+        <script type="text/javascript" src="jquery.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+        <script type="text/javascript" src="d3.v5.js"></script>
+        <script type="text/javascript" src="mithril.js"></script>
+        <script type="text/javascript" src="stream.js"></script>
+
+        <script type="text/javascript" src="src/Table/Column.js"></script>
+        <script type="text/javascript" src="src/Table/Table.js"></script>
+
+        <script>
+
+            function SuperSelectable(element, cfg) {
+                const ABIERTO  = 1;
+                const BUSCANDO = 2;
+                const CERRADO  = -1;
+
+                let interval, apagado, antApagado = null;
+                let idNumb    = Math.round(Math.random( ) * 1000000);
+                let baseAttr  = "mas-selector";
+                let idFloater = baseAttr.concat('-floater-', idNumb);
+                let idInput   = baseAttr.concat('-input-', idNumb);
+                let value     = m.stream(cfg.value)
+                let enabled   = m.stream()
+                let busqueda  = '';
+
+                element.setAttribute(baseAttr.concat('-id'), idNumb);
+
+                function abrir() {
+                    let H = element.offsetHeight + 5;
+                    let W = element.offsetWidth  + 16;
+
+                    apagado = null
+                    estatus = ABIERTO
+                    enabled(value())
+                    
+                    d3.select(element).classed('is-info', true)
+                    d3.select(element).classed('is-light', true)
+                    d3.select(element).classed('enfocado', true)
+
+                    if(d3.select('#' + idFloater).empty()) {
+                        const floater = d3.select('body').append('div').attr('class','floater').attr('id', idFloater);
+                        
+                        floater.style('width', String(W).concat('px')).style('top', String(40).concat('px')).style('left', String(16).concat('px'));
+                        floater.append('input').attr('id', idInput).attr('class', 'input is-small').style('margin-top', '48px');
+                        floater.append('div').attr('class','opts');
+                        
+                        $('#' + idInput).blur(listenEnd);
+                        $('#' + idInput).focus(() => apagado = null);
+                        $('#' + idInput ).keyup(ev => {
+                            if(busqueda != ev.target.value) {
+                                busqueda = ev.target.value;
+                                estatus = BUSCANDO;
+                                enabled(null)
+                                actualizarOpciones();
+                            }
+                        });
+
+                        
+                    }
+
+                    actualizarOpciones();
+                    registrarIntervalo();
+                    document.querySelector('#'.concat(idInput)).focus()
+                }
+
+
+                function actualizarOpciones() {
+                    d3.select('#' + idFloater).selectAll('.opcion').remove();
+                    let data = getData();
+
+                    if(enabled() == null && data[0]) {
+                        enabled(data[0].id)
+                    }
+
+                    let opciones = d3.select('#' + idFloater + ' .opts').selectAll('.opcion').data(data);
+                    let enterOpt = opciones.enter().append('div').attr('class', 'opcion').attr('data-val', d => d.id);
+                    
+                    enterOpt.append('a')
+                        .attr('class', 'button is-small')
+                        .classed('is-info', d => d.id == enabled())
+                        .attr('style', 'font-size:0.65rem; display:block; height:auto; justify-content:left; max-width:150px; overflow:hidden')
+                        .append('div').attr('class', 'cont')
+                        .style('text-align', 'left')
+
+                    enterOpt.select('.cont').append('strong').text(d => d.cuenta);
+                    enterOpt.select('.cont').append('br');
+                    enterOpt.select('.cont').append('span').text(d => d.nombre);
+                }
+
+
+                function getData() {
+                    if(estatus == ABIERTO) {
+                        return cfg.data.filter(d => d.id == cfg.value);
+                    }
+                    if(estatus == BUSCANDO) {
+                        return cfg.data.filter(d => d.cuenta.indexOf(busqueda) > -1);
+                    }
+                }
+
+
+                function registrarIntervalo () {
+                    if(interval) return;
+                    
+                    interval = setInterval(() => {
+                        if(!apagado) return;
+                        if(apagado === antApagado) return cerrar();
+                        antApagado = apagado;
+                    }, 123);
+                }
+
+
+                function cerrar() {
+                    d3.select('#' + idFloater).remove();
+                    d3.select(element).classed('is-info', false);
+                    d3.select(element).classed('is-light', false);
+                    apagado = antApagado = null;
+                    clearInterval(interval);
+                    interval = null;
+                }
+
+                $(element).focus(ev => abrir());
+                function listenEnd() { apagado = {} }
+            }
+
+
+            SuperSelectable.createFilter = function () {
+
+            }
+
+            d3.json('./cuentas.json').then(ctas => {
+                /*
+                new SuperSelectable(document.querySelector('#chamuk0'), {
+                    filterFn : SuperSelectable.createFilter(d => { return d.cuenta + ' ' + d.nombre }),
+                    data     : ctas,
+                    value    : "45fb7a45-2f70-456d-bf19-aca6bc8866c5"
+                });
+                */
+                let table = new Table()
+                let columId = Column('id');
+                columId.update = update => update.text( d => d.text.substring(0,8)  + '...')
+
+                d3.select('#tableHash')
+                    .datum({
+                        columns : [
+                            columId,
+                            Column('cuenta'),
+                            Column('nombre')
+                        ],
+                        rows : ctas.slice(0, 100)
+                    })
+                    .call(table.draw)
+
+
+
+            });
+        </script>
+    </body>
+</html>
