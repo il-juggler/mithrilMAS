@@ -27,7 +27,6 @@ TableComponent.oncreate = function (vnode) {
             console.log(d, selection.isSelected(d.row))
             return selection.isSelected(d.row) == false ? undefined : true
         })
-
         d3.select(vnode.dom).selectAll('tr.trow').classed('table-info', d => selection.isSelected(d.row))
     }
 }
