@@ -25,6 +25,12 @@ function Column(name, config) {
 
     this.update = typeof config.update == 'function' ? config.update : update => update.text( F('text') );
     this.enter  = typeof config.enter == 'function'  ? config.enter : e => e;
+
+    this.call = function(funk) {
+        funk(column)
+        return column
+    }
+
 }
 
 
