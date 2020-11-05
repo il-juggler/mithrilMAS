@@ -8,7 +8,6 @@ function Column(name, config) {
 
     const column = this;
     const accesor = typeof config.value === 'function' ? config.value : F(name)
-
     
     //Esto retorna el valor en si mismo que vamos a usar
     this.value = accesor;
@@ -24,13 +23,12 @@ function Column(name, config) {
     }
 
     this.update = typeof config.update == 'function' ? config.update : update => update.text( F('text') );
-    this.enter  = typeof config.enter == 'function'  ? config.enter : e => e;
-
+    this.enter  = typeof config.enter  == 'function' ? config.enter  : e => e;
+    
     this.call = function(funk) {
         funk(column)
         return column
     }
-
 }
 
 
