@@ -18,7 +18,7 @@ function Column(name, config) {
     this.compute = (row) => {
         let value = this.value(row);
         let cell  = {value,column,row};
-        cell.text = this.text(value);
+        cell.text = this.text(value, cell);
         return cell;
     }
 

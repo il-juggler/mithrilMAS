@@ -15,9 +15,8 @@ function Table() {
         if(tableEl.select('tbody').empty()) {
             tableEl.append('tbody')
         }
+        
         const tBodyEl = tableEl.select('tbody');
-
-
         const tRows = tBodyEl.selectAll('tr.trow').data(data)
             .join(
                 enter => enter.append('tr').attr('class', 'trow'),
