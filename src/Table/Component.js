@@ -16,7 +16,8 @@ TableComponent.oncreate = function (vnode) {
     d3.select(vnode.dom)
         .datum({
             columns : vnode.attrs.columns,
-            rows : vnode.attrs.rows
+            rows : vnode.attrs.rows,
+            showTitles : vnode.attrs.showTitles
         })
         .call(vnode.state.table.draw)
 
@@ -38,15 +39,14 @@ TableComponent.onbeforeupdate = function(vnode, old) {
 }
 
 TableComponent.onupdate = function(vnode, old) {
-  
-    console.log('update', this.forceRedraw)
     if(this.forceRedraw == true) {
         this.forceRedraw = false;
 
         d3.select(vnode.dom)
             .datum({
                 columns : vnode.attrs.columns,
-                rows : vnode.attrs.rows
+                rows : vnode.attrs.rows,
+                showTitles : vnode.attrs.showTitles
             })
             .call(vnode.state.table.draw)
     }

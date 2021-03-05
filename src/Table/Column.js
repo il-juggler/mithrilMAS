@@ -7,6 +7,8 @@ function Column(name, config) {
     if(!config) config = {};
 
     const column = this;
+    column.name = name;
+    column.header = (typeof config.header == 'undefined' ) ? name : config.header;
     const accesor = typeof config.value === 'function' ? config.value : F(name)
     
     //Esto retorna el valor en si mismo que vamos a usar

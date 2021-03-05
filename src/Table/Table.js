@@ -11,6 +11,28 @@ function Table() {
         }
         const tableEl = selection.select('table');
 
+         //Crear <thead>
+        if(tableEl.select('thead').empty()) {
+            tableEl.append('thead')
+        }
+
+
+        if(tableEl.select('thead tr').empty()) {
+            tableEl.select('thead').append('tr').attr('class', 'titulos')
+        }
+
+        const theadTR = tableEl.select('thead tr.titulos');
+        theadTR.selectAll('th.header').data(datum.columns)
+            .join(
+                enter => enter.append('th').attr('class', 'header').text(c => c.header),
+                update => update.text(c => c.header),
+                exit => exit.remove()
+            )
+        
+        console.log('showTitles', datum.showTitles);
+        tableEl.select('thead').style('display', datum.showTitles === false ? 'none' : '')
+
+
         //Crear <tbody>
         if(tableEl.select('tbody').empty()) {
             tableEl.append('tbody')
