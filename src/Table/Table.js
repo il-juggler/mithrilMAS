@@ -44,7 +44,10 @@ function Table() {
                 enter => enter.append('tr').attr('class', 'trow'),
                 update => update,
                 exit => exit.remove()
-            );
+            ).call(function (sel) {
+                console.log(datum.updateRows)
+                return datum.updateRows ? datum.updateRows(sel) :  update 
+            });
 
         const tCells = tRows.selectAll('td.cell').data(row => row.cells)
             .join(

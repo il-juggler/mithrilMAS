@@ -5,19 +5,19 @@ export default TableComponent
 
 TableComponent.oninit = function (vnode) {
    vnode.state.table = new Table()
-   console.log(vnode.state.table)
 }
-
 
 
 TableComponent.oncreate = function (vnode) {
     const selection = vnode.attrs.selection
 
+    
     d3.select(vnode.dom)
         .datum({
             columns : vnode.attrs.columns,
             rows : vnode.attrs.rows,
-            showTitles : vnode.attrs.showTitles
+            showTitles : vnode.attrs.showTitles,
+            updateRows : vnode.attrs.updateRows
         })
         .call(vnode.state.table.draw)
 
@@ -26,7 +26,10 @@ TableComponent.oncreate = function (vnode) {
             console.log(d, selection.isSelected(d.row))
             return selection.isSelected(d.row) == false ? undefined : true
         })
-        d3.select(vnode.dom).selectAll('tr.trow').classed('table-info', d => selection.isSelected(d.row))
+
+        d3.select(vnode.dom)
+            .selectAll('tr.trow')
+            .classed('table-info', d => selection.isSelected(d.row))
     }
 
 }
@@ -38,15 +41,20 @@ TableComponent.onbeforeupdate = function(vnode, old) {
     return true;
 }
 
-TableComponent.onupdate = function(vnode, old) {
+TableComponent.onupdate = function(vnode) {
+    console.log('UpdateRow!')
+
     if(this.forceRedraw == true) {
         this.forceRedraw = false;
+
+        console.log(':updateRows', vnode.attrs.updateRows)
 
         d3.select(vnode.dom)
             .datum({
                 columns : vnode.attrs.columns,
                 rows : vnode.attrs.rows,
-                showTitles : vnode.attrs.showTitles
+                showTitles : vnode.attrs.showTitles,
+                updateRows : vnode.attrs.updateRows
             })
             .call(vnode.state.table.draw)
     }
