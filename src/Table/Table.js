@@ -24,7 +24,7 @@ function Table() {
         const theadTR = tableEl.select('thead tr.titulos');
         theadTR.selectAll('th.header').data(datum.columns)
             .join(
-                enter => enter.append('th').attr('class', 'header').style('background', '#009EE3').style('color', '#fff').text(c => c.header),
+                enter => enter.append('th').attr('class', 'header').style('background', '#009EE3').style('color', '#fff').style('vertical-align', 'middle').text(c => c.header),
                 update => update.text(c => c.header),
                 exit => exit.remove()
             )
