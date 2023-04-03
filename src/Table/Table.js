@@ -64,8 +64,8 @@ function Table() {
     }
 
     function EnterCellColumns(enter, datum) {
-        datum.columns.forEach(column => {
-            enter.filter(cell => cell.column == column).call(column.enter, column)
+        datum.columns.forEach((column, index) => {
+            enter.filter(cell => cell.column == column).call(column.enter, datum[index]);
         })
     }
 
