@@ -45,7 +45,6 @@ function Table() {
                 update => update,
                 exit => exit.remove()
             ).call(function (sel) {
-                console.log(datum.updateRows)
                 return datum.updateRows ? datum.updateRows(sel) :  update 
             });
 
@@ -66,7 +65,7 @@ function Table() {
 
     function EnterCellColumns(enter, datum) {
         datum.columns.forEach(column => {
-            enter.filter(cell => cell.column == column).call(column.enter)
+            enter.filter(cell => cell.column == column).call(column.enter, column)
         })
     }
 
