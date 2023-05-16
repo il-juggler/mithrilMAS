@@ -29,7 +29,6 @@ function Table() {
                 exit => exit.remove()
             )
         
-        console.log('showTitles', datum.showTitles);
         tableEl.select('thead').style('display', datum.showTitles === false ? 'none' : '')
 
 
