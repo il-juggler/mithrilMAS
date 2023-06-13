@@ -44,7 +44,7 @@ function Table() {
                 update => update,
                 exit => exit.remove()
             ).call(function (sel) {
-                return datum.updateRows ? datum.updateRows(sel) :  update 
+                return datum.updateRows ? datum.updateRows(sel) :  (update) => update  
             });
 
         const tCells = tRows.selectAll('td.cell').data(row => row.cells)
@@ -66,7 +66,7 @@ function Table() {
         datum.columns.forEach((column, index) => {          
             enter.filter(cell => cell.column == column).call(column.enter, datum.rows);
         });
-      }
+    }
 
     function UpdateCellColumns(tCells, datum) {
         datum.columns.forEach(column => {

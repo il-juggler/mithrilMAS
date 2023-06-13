@@ -7,7 +7,6 @@ TableComponent.oninit = function (vnode) {
     vnode.state.table = new Table()
 }
 
-
 TableComponent.oncreate = function (vnode) {
     const selection = vnode.attrs.selection
     
@@ -21,13 +20,13 @@ TableComponent.oncreate = function (vnode) {
         .call(vnode.state.table.draw)
 
     if(selection) {
-       d3.select(vnode.dom).selectAll('tr.trow input').attr('checked', d => {
+        d3.select(vnode.dom).selectAll('tr.trow input').attr('checked', d => {
             return selection.isSelected(d.row) == false ? undefined : true
-        })
+        });
 
         d3.select(vnode.dom)
             .selectAll('tr.trow')
-            .classed('table-info', d => selection.isSelected(d.row))
+            .classed('table-info', d => selection.isSelected(d.row));
     }
 
 }
