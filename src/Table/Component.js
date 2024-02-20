@@ -4,7 +4,12 @@ const TableComponent = {};
 export default TableComponent
 
 TableComponent.oninit = function (vnode) {
-    vnode.state.table = new Table()
+    let options = {};
+    if(vnode.attrs.stickyHeaders){
+        options.stickyHeaders = true;
+    }
+
+    vnode.state.table = new Table(options);
 }
 
 
@@ -55,6 +60,11 @@ TableComponent.onupdate = function(vnode) {
     }
 }
 
-TableComponent.view = function () {
-    return m('div[table-component]')
+TableComponent.view = function (vnode) {
+    let tableStyle = "";
+    if(vnode.attrs.stickyHeaders){
+        tableStyle = "height: 80vh !important;";
+    }
+
+    return m('div[table-component]', {style: tableStyle});
 }

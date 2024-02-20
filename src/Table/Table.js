@@ -1,24 +1,32 @@
 export default Table;
 
-function Table() {
+function Table(options = null) {
     this.draw = (function (selection) {
-        let datum = selection.datum()
-        let data = this.compute(datum.columns, datum.rows)
+        let datum = selection.datum();
+        let data = this.compute(datum.columns, datum.rows);
+        let theadClass = "";
+        let trHeadClass = "titulos";
+
+        if(options) {
+            if(options.stickyHeaders) {
+                theadClass += " sticky";
+                trHeadClass += " sticky";
+            }
+        }
 
         //Crear <table class="table">
         if(selection.select('table').empty()) {
-            selection.append('table').attr('class','table')
+            selection.append('table').attr('class','table');
         }
         const tableEl = selection.select('table');
 
          //Crear <thead>
         if(tableEl.select('thead').empty()) {
-            tableEl.append('thead')
+            tableEl.append('thead').attr('class', theadClass);
         }
 
-
         if(tableEl.select('thead tr').empty()) {
-            tableEl.select('thead').append('tr').attr('class', 'titulos')
+            tableEl.select('thead').append('tr').attr('class', trHeadClass);
         }
 
         const theadTR = tableEl.select('thead tr.titulos');
